@@ -1,0 +1,166 @@
+---
+title: "Patient profile for developers"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    theme: cerulean
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(echo = TRUE, eval = FALSE, message = FALSE)
+```
+
+# Adding the patient profile to an app
+
+
+The patient profile has been packaged as a [shiny module](https://shiny.rstudio.com/articles/modules.html) to facilitate 
+deployment. It can be added to any app that uses standard ADaM datasets with 
+only a couple of lines. 
+
+#### Server
+
+Server side, ADaM datasets are passed in the module call.
+```{r, eval = F}
+callModule(patientProfile_mod, id = "pp_module1",
+           ADSL = myADSL, ADAE = myADAE, ADCM = myADCM, ADLB = myADLB,
+           ADEG = myADEG, ADEX = myADEX, ADPC = myADPC)
+```
+Aside from `ADSL`, all other datasets can be left NULL. Missing datasets
+simply disable some of the functionalities of the module. Moreover, 
+whenever informative columns are missing, the submodules will attempt to
+find alternative sources within the given data.
+
+
+#### UI
+
+UI side, `patientProfile_modUI` can be used to 
+```{r, eval = F}
+patientProfile_modUI(id = "pp_module1")
+```
+
+
+# Submodules
+While the patient profile is meant to be used as a single top level module that
+will adapt to the data available, submodules are exported by the package and
+can be used individually. They are currently impplemented as `tabPanel`, so 
+their use is restricted to compatible containers (`navbarPage`/`avaNavbarPage`,
+`tabsetPanel`/`avaTabPanel`, ...).
+
+
+For example, to include the Exposure & Lab values module alone
+```{r, eval = F}
+# Server
+callModule(module = exlb_mod, id = "exlb_auto", uid = uid,
+           ADSL = ADSL, ADLB = ADLB, ADEX = ADEX, ADPC = ADPC)
+# UI (within a tabset or menubar)
+exlb_UI(ns("exlb_auto"))
+```
+
+When used in this manner, it is the developer's responsibility to add the 
+appropritate data checks to ensure correct behaviour.
+
+Refer to the individual submodules documentation for details on the 
+required inputs.
+
+# Linking patient profile with other modules
+
+A `uid` argument can be passed to the patient profile. By creating a new
+input binding in the server code and linking it to a `Shiny.onInputChange`
+event, we can set the participant profile to automatically 
+select a participant of interest targeted from another plot.
+
+```{r}
+# Server code
+uid <- reactiveVal()
+observe({
+  ns <- session$ns
+  if(!is.null(input$patient_js)){
+    print("Updating selected patient")
+    uid(input$patient_selector)
+  }
+})
+# Module call
+callModule(patientProfile_mod, id = "pp_module1", uid = uid, ADSL = myADSL)
+```
+
+
+## Existing implementations
+The [AVA safety explorer](http://go/scc/ase-pkg) is linked with the patient profile, such that when a
+participant is clicked in the timelines or safety outlier explorer, the 
+subject is pre-selected in the patient profile module.
+
+Likewise, if the [eDISH](https://github.com/SafetyGraphics/hep-explorer) plot is
+also part of the app, it will have the same interaction with the participant 
+profile.
+
+## Custom plots 
+An example is available in the `pp-template` shiny app embeded within the package.
+
+Using `plotly`, we can setup a plot with patient ids as key.
+```{r, eval = F}
+p <- plot_ly(data = data, x = ~ADT, y = ~AVAL,
+             key = ~USUBJID,
+             type = "scatter", mode = "markers",
+             text = ~paste("uid:", USUBJID))
+```
+
+With the `onRender` function of
+the `htmlwidgets` package, javascript code can be added to plot events. We can
+use this to link a custom plot with the patient profile
+```{r, eval = F}
+# p is a plotly object
+p <- p %>% onRender("
+  function(el){
+    el.on('plotly_click', function(d){
+      selsub = d.points[0].data.key[d.points[0].pointNumber];
+      console.log('Click: ', selsub);
+      Shiny.onInputChange('pp_module1-patient_js', selsub);
+    })
+  }
+")
+```
+
+The chunk of code assume that the module id is "pp_module1". If the module is
+named differently, the render string can be built 
+
+```{r, eval = F}
+module_id <- "pp_module2"
+render <- paste0("
+  function(el){
+    el.on('plotly_click', function(d){
+      selsub = d.points[0].data.key[d.points[0].pointNumber];
+      console.log('Click: ', selsub);
+      Shiny.onInputChange('", module_id, "-patient_js', selsub);
+    })
+  }
+")
+```
+
+If the plot function is part of its own module, then the namespace must be
+passed instead of the module name.
+
+```{r, eval = F}
+target <- ns("patient_js")
+render <- paste0("
+  function(el){
+    el.on('plotly_click', function(d){
+      selsub = d.points[0].data.key[d.points[0].pointNumber];
+      console.log('Click: ', selsub);
+      Shiny.onInputChange('", target, "', selsub);
+    })
+  }
+")
+```
+
+
+# Creating submodules for patprofile
+
+All visualization tools were created as self contained submodules, making it
+trivial to extend the functionalities of the patient profile by adding new
+submodules.
+
+
+Developers are encouraged to submit merge requests with their own
+shiny modules or open issues to suggest new visualization on the
+[package's GitLab page](https://gitlabce.statwb.eu.novartis.net/SAUTERE1/pprofile).

@@ -1,0 +1,53 @@
+navbar:
+  structure:
+    left:
+    - home
+    - intro
+    - devel
+    - reference
+  components:
+    home:
+      icon: fa-home fa-lg
+      href: index.html
+    reference:
+      text: Reference
+      href: reference/index.html
+    intro:
+      text: Get started
+      href: articles/pprofile.html
+    devel:
+      text: patprofile for developers
+      href: articles/pprofile_dev.html
+reference:
+- title: Modules
+  desc: Module and submodule shiny functions
+  contents:
+  - '`patientProfile_mod`'
+  - '`overview_mod`'
+  - '`aecm_UI`'
+  - '`ecg_UI`'
+  - '`execg_UI`'
+  - '`exlb_UI`'
+  - '`labo_UI`'
+  - '`labp_UI`'
+  - '`pk_UI`'
+- title: Utilities
+  desc: Useful functions
+  contents:
+  - '`run_template`'
+- title: Exposed functions
+  desc: These functions are not meant to be used directly but are documented and exposed in order to facilitate improvements and the development of new submodules.
+  contents:
+  - '`get_aecm_data`'
+  - '`get_lab_values`'
+  - '`get_uid_info`'
+  - '`plot_ECG`'
+  - '`plot_EX`'
+  - '`plot_EXEG`'
+  - '`plot_PK`'
+  - '`plot_lab_param`'
+  - '`plot_lab_visits`'
+- title: Others
+  desc: ~
+  contents:
+  - '`pprofile-pkg`'

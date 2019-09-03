@@ -1,0 +1,31 @@
+Package: patprofile
+Type: Package
+Title: Patient profile module
+Version: 0.2.2
+Authors@R: c(
+    person("Renan", "Sauteraud", email = "renan.sauteraud@gmail.com", role = c("aut", "cre")),
+    person("Xiao", "Ni", email = "xiao.nid@novartis.com", role = c("aut"))
+    )
+Description: Patient profile as a single module that can be plugged in any app.
+    Patient-level visualization encapsulated as submodules.
+License: MIT + file LICENSE
+Imports:
+  R6,
+  haven,
+  scales,
+  grid,
+  gtable,
+  ggplot2,
+  shiny,
+  dplyr,
+  plotly,
+  RColorBrewer,
+  data.table,
+  magrittr,
+  DT
+Suggests:
+  ava,
+  shiny
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
