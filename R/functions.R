@@ -158,7 +158,7 @@ get_lab_values <- function(uid, ADLB){
       filter(!is.na(ATOXGR), ATOXGR != "") %>%
       mutate(ATOXGR = factor(abs(as.numeric(ATOXGR))))
   }
-  if("ANRIND" %in% colnames(ppLB)){
+  if("LBNRIND" %in% colnames(ppLB)){
     ppLB <- ppLB %>%
       mutate(direction = ifelse(ANRIND == "HIGH", 'high', ifelse(ANRIND == "LOW", 'low', 'square')))
     ppLB$ANRIND <- factor(ppLB$ANRIND, levels = c('LOW', 'NORMAL', 'HIGH'))

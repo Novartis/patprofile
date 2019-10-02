@@ -3,6 +3,8 @@ config.json
 .log/
 data/
 
+rsconnect/
+
 # History files
 .Rhistory
 .Rapp.history

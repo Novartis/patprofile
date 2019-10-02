@@ -62,7 +62,14 @@ labp_mod <-function(input, output, session, uid, ADLB){
 plotly_lab_param <- function(uid, params, ADLB){
   selcols <- c("USUBJID", "PARAMCD", "BASE", "VISIT", "VISITNUM", "AVAL", "ADT",
                "ANRLO", "ANRHI", "TRTSDT", "TRTEDT", "PARAM", "ADY", "ONTRTFL")
-
+  
+  adlbcols <- names(ADLB)
+  if ("A1LO" %in% names(ADLB))
+    ADLB$ANRLO <- ADLB$A1LO
+  
+  if ("A1HI" %in% names(ADLB)) 
+    ADLB$ANRHI <- ADLB$A1HI
+  
   selADLB <- select(ADLB, one_of(selcols))
   dfLB <- selADLB %>%
     filter(USUBJID == uid, PARAMCD %in% params, !is.na(AVAL)) %>%

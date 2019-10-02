@@ -1,6 +1,6 @@
 function(request){
-  avaNavbarPage(
-    id="Menu",
+  navbarPage(
+    "Patprofile Example",
     tabPanel(
       title = "Patient Profiles",
       patientProfile_modUI(id = "pp_module1")

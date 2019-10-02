@@ -36,7 +36,7 @@ labo_mod <- function(input, output, session, uid, ADLB){
                 "direction", "date")
     color_options <- avail[!avail %in% noshow]
     color_options <- c("None", sort(color_options))
-    lab_col_selected <- ifelse("ATOXGR" %in% color_options, "ATOXGR", "None")
+    lab_col_selected <- ifelse("LBNRIND" %in% color_options, "LBNRIND", "None")
     lab_reac(lab_vals)
     tagList(
       selectInput(ns("labov_col"), label = "Color by",

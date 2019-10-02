@@ -5,8 +5,8 @@ patientProfile_modUI <- function(id){
   # Create a namespace function using the provided id
   ns <- NS(id)
   tagList(
-    tabPanel(
-      title = "Patient profiles",
+   # tabPanel(
+    #  title = "Patient profiles",
       wellPanel(
         sidebarLayout(
           sidebarPanel(width = 3, align = "center",
@@ -21,6 +21,6 @@ patientProfile_modUI <- function(id){
         id = ns("main_tabset"),
         overview_modUI(ns("overview_tab"))
       )
-    )
+    #)
   )
 }

@@ -5,7 +5,7 @@
 #' @importFrom shiny runApp
 #' @export
 run_template <- function(){
-  appdir <- system.file("shiny-examples/pp-template/", package = "pprofile")
+  appdir <- system.file("shiny-examples/pp-template/", package = "patprofile")
   print(paste("App in", appdir))
   runApp(appDir = appdir)
 }

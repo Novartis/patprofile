@@ -116,7 +116,7 @@ plot_EXLB <- function(uid, ADLB, ADSL, ADEX, ADPC, paramcd = c('ALP', 'ALT', 'AS
 #' Plot lab visits
 #' @importFrom ggplot2 aes_string geom_point scale_fill_manual scale_shape_manual facet_grid
 #' @importFrom RColorBrewer brewer.pal
-plot_lab_visits <- function(lab_data, color_by = "ATOXGR"){
+plot_lab_visits <- function(lab_data, color_by = "LBNRIND"){
 
   cols <- c("#225EA8", "#FEB24C", "#FD8D3C", "#FC4E2A", "#E31A1C")
 
@@ -141,7 +141,13 @@ plot_lab_visits <- function(lab_data, color_by = "ATOXGR"){
   if("ANRIND" %in% colnames(lab_data)){
     aesshape <- "ANRIND"
   }
+  
+  if("LBNRIND" %in% colnames(lab_data)){
+    aesshape <- "LBNRIND"
+  }
+  
 
+  #browser()
   p <- ggplot(data = lab_data,
               aes_string(x = "AVISIT2", y = "PARAM", col = aescol, fill = aesfill, shape = aesshape))
 
@@ -331,13 +337,14 @@ plot_ECG <- function(uid, paramcd, ADEG){
 
 #' Plot PK
 plot_PK <- function (uid, param, ADPC) {
+    
   dfPK <- ADPC %>%
     filter(USUBJID == uid, PARAM == param, !is.na(AVAL)) %>%
     select(USUBJID, PARAMCD, AVISIT, AVISITN, AVAL, ADT,
-           TRTSDT, TRTEDT, PARAM, ADY, ONTRTFL, ATPT, SMPNO, EXDOSE, PKFL) %>%
+           TRTSDT, TRTEDT, PARAM, ADY, ATPT, SMPNO, PKFL) %>%
     mutate(date = as.Date(ADT, origin = '1960-01-01'),
-           SMPNO = as.numeric(SMPNO),
-           ONTRTFL = ifelse(ONTRTFL == 'Y', 'Yes', 'No'))
+           SMPNO = as.numeric(SMPNO))#,
+           #ONTRTFL = ifelse(ONTRTFL == 'Y', 'Yes', 'No'))
 
   parameter <- unique(dfPK$PARAM)
   trtsdt <- as.Date(unique(dfPK$TRTSDT), origin='1960-01-01')

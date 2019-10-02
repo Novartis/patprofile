@@ -1,33 +1,30 @@
 function(input, output, session) {
   myADSL <- reactive({
-    adslf <- system.file("data/ADSL.sas7bdat", package = "pprofile")
-    haven::read_sas(adslf)
+    haven::read_xpt("https://github.com/phuse-org/phuse-scripts/raw/master/data/adam/cdisc/adsl.xpt")
   })
   myADCM <- reactive({
-    adcmf <- system.file("data/ADCM.sas7bdat", package = "pprofile")
-    haven::read_sas(adcmf)
+    haven::read_xpt("https://github.com/phuse-org/phuse-scripts/raw/master/data/adam/cdisc/adcm.xpt")
   })
   myADAE <- reactive({
-    adaef <- system.file("data/ADAE.sas7bdat", package = "pprofile")
-    haven::read_sas(adaef)
+    haven::read_xpt("https://github.com/phuse-org/phuse-scripts/raw/master/data/adam/cdisc/adae.xpt")
   })
   myADLB <- reactive({
-    adlbf <- system.file("data/ADLB.sas7bdat", package = "pprofile")
-    haven::read_sas(adlbf)
+    haven::read_xpt("https://github.com/phuse-org/phuse-scripts/raw/master/data/adam/cdisc/adlbc.xpt")
   })
+  
   myADPC <- reactive({
-    adpcf <- system.file("data/ADPC.sas7bdat", package = "pprofile")
-    haven::read_sas(adpcf)
+    ADPC <- haven::read_xpt("https://github.com/phuse-org/phuse-scripts/raw/master/data/adam/cdisc/adpc.xpt")
+    
+    adpcCols <- names(ADPC)
+    
+    if (! ("AVISIT" %in% adpcCols | "AVISITN" %in% adpcCols) & "VISITNUM" %in% adpcCols) {
+      ADPC$AVISIT <- factor(ADPC$VISITNUM)
+      ADPC$AVISITN <- ADPC$VISITNUM
+    }
+    
+    ADPC %>% select(-USUBJID) %>% mutate( SUBJID = substring(SUBJID, first=4)) %>% left_join( myADSL() %>% select(SUBJID, USUBJID), by="SUBJID" )
+    
   })
-  myADEG <- reactive({
-    adegf <- system.file("data/ADEG.sas7bdat", package = "pprofile")
-    haven::read_sas(adegf)
-  })
-  myADEX <- reactive({
-    adexf <- system.file("data/ADEX.sas7bdat", package = "pprofile")
-    haven::read_sas(adexf)
-  })
-
   # Grab events from shiny.onInputChange
   uid <- reactiveVal()
   observe({
@@ -39,11 +36,9 @@ function(input, output, session) {
 
   # Main module call
   observe({
-    req(myADSL(), myADAE(), myADCM(), myADLB(),
-        myADEG(), myADEX(), myADPC())
+    req(myADSL(), myADAE(), myADCM(), myADLB(), myADPC())
     callModule(patientProfile_mod, id = "pp_module1", #uid = uid,
-               ADSL = myADSL, ADAE = myADAE, ADCM = myADCM, ADLB = myADLB,
-               ADEG = myADEG, ADEX = myADEX, ADPC = myADPC)
+               ADSL = myADSL, ADAE = myADAE, ADCM = myADCM, ADLB = myADLB, ADPC = myADPC)
   })
   # Linked plot
   output$linked_ply <- renderPlotly({
