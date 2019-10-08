@@ -4,7 +4,7 @@
 \alias{showExamples}
 \title{Start patient-profile app}
 \usage{
-showExamples(example = "safetyExpPatProfile", port = NULL,
+showExamples(example = "patProfile", port = NULL,
   launch.browser = getOption("shiny.launch.browser", interactive()),
   host = getOption("shiny.host", "127.0.0.1"), display.mode = c("auto",
   "normal", "showcase"))

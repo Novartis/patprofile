@@ -37,7 +37,7 @@ overview_mod0 <- function(input, output, session,
   observe({
     req(uid())
     print("renderUI: Overview")
-    output$adsl_oview <- renderDataTable(expr = {
+    output$adsl_oview <- DT::renderDataTable(expr = {
       tables$ADSL
     }, options = list(pageLength = 1, dom = 't'))
     output$table_name <- renderText({"ADSL"})
@@ -46,7 +46,7 @@ overview_mod0 <- function(input, output, session,
     tagList(
       textOutput(ns("table_name")),
       br(),
-      dataTableOutput(ns("adsl_oview"))
+      DT::dataTableOutput(ns("adsl_oview"))
     )
   })
 }
@@ -129,7 +129,7 @@ overview_mod <- function(input, output, session, uid, ADSL = NULL,
       ns_nmi <- paste0("name", i)
       ns_tbi <- paste0("table", i)
       output[[ns_nmi]] <- renderText({names(tbl)[[i]]})
-      output[[ns_tbi]] <- renderDataTable({tbl[[i]]},
+      output[[ns_tbi]] <- DT::renderDataTable({tbl[[i]]},
                             options = list(pageLength = 5, dom = 't'))
     })
 
@@ -138,7 +138,7 @@ overview_mod <- function(input, output, session, uid, ADSL = NULL,
       tb_id <- paste0("table", i)
       list(
         textOutput(ns(nm_id)),
-        dataTableOutput(ns(tb_id))
+        DT::dataTableOutput(ns(tb_id))
       )
     })
   })

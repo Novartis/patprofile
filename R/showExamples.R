@@ -4,7 +4,7 @@
 #'
 #' @importFrom shiny runApp
 #' @export
-showExamples <- function (example = 'safetyExpPatProfile', port = NULL, launch.browser = getOption("shiny.launch.browser", 
+showExamples <- function (example = 'patProfile', port = NULL, launch.browser = getOption("shiny.launch.browser", 
                                                                 interactive()), host = getOption("shiny.host", "127.0.0.1"), 
           display.mode = c("auto", "normal", "showcase")) 
 {

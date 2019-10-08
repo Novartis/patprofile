@@ -31,9 +31,9 @@ function(input, output, session) {
   })
   myADLB <- reactive({
     lb <- haven::read_xpt("https://github.com/phuse-org/phuse-scripts/raw/master/data/adam/cdisc/adlbc.xpt")
-    subjs <- lb %>% pull (USUBJID) %>% unique() %>% sample(80)
-    lb1 <- lb %>% filter(USUBJID %in% subjs)
-    lb1
+    #subjs <- lb %>% pull (USUBJID) %>% unique() %>% sample(80)
+    #lb1 <- lb %>% filter(USUBJID %in% subjs)
+    lb
   })
   
   myADPC <- reactive({
