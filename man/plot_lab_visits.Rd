@@ -4,7 +4,7 @@
 \alias{plot_lab_visits}
 \title{Plot lab visits}
 \usage{
-plot_lab_visits(lab_data, color_by = "ATOXGR")
+plot_lab_visits(lab_data, color_by = "LBNRIND")
 }
 \description{
 Plot lab visits

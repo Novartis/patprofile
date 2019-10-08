@@ -8,7 +8,8 @@
 overview_modUI(id)
 
 overview_mod(input, output, session, uid, ADSL = NULL, ADLB = NULL,
-  ADAE = NULL, ADCM = NULL, ADEG = NULL, ADPC = NULL, ADEX = NULL)
+  ADAE = NULL, ADCM = NULL, ADEG = NULL, ADPC = NULL,
+  ADEX = NULL)
 }
 \arguments{
 \item{id}{A \code{character}. The namespace for the module.}

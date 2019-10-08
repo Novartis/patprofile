@@ -7,8 +7,8 @@
 \title{Patient profile module}
 \usage{
 patientProfile_mod(input, output, session, uid = NULL, ADSL = NULL,
-  ADAE = NULL, ADCM = NULL, ADLB = NULL, ADEG = NULL, ADPC = NULL,
-  ADEX = NULL)
+  ADAE = NULL, ADCM = NULL, ADLB = NULL, ADEG = NULL,
+  ADPC = NULL, ADEX = NULL)
 
 patientProfile_modUI(id)
 }
