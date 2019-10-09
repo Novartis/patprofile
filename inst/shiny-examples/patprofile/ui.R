@@ -9,6 +9,11 @@ function(request){
       includeMarkdown("./wiki.md")
     ),
     
+    tabPanel(
+      title = "Patient Profiles",
+      patientProfile_modUI(id = "pp_module1")
+    ),
+    
     navbarMenu("Adverse Events",
                tabPanel(
                  title = "AE Explorer",
@@ -48,10 +53,7 @@ function(request){
                )
     ),
     
-    tabPanel(
-      title = "Patient Profiles",
-      patientProfile_modUI(id = "pp_module1")
-    ),
+
     tabPanel(
       title = "eDISH using Plotly",
       tagList(

@@ -18,13 +18,28 @@ Shiny.setInputValue('pp_module1-patient_js', chart.participantsSelected[0]);
 "
 
 function(input, output, session) {
+  
+  
   myADSL0 <- reactive({
     haven::read_xpt("https://github.com/phuse-org/phuse-scripts/raw/master/data/adam/cdisc/adsl.xpt")
   })
   
+  myADPC <- reactive({
+    ADPC <- haven::read_xpt("https://github.com/phuse-org/phuse-scripts/raw/master/data/adam/cdisc/adpc.xpt")
+    
+    adpcCols <- names(ADPC)
+    
+    if (! ("AVISIT" %in% adpcCols | "AVISITN" %in% adpcCols) & "VISITNUM" %in% adpcCols) {
+      ADPC$AVISIT <- factor(ADPC$VISITNUM)
+      ADPC$AVISITN <- ADPC$VISITNUM
+    }
+    
+    ADPC %>% select(-USUBJID) %>% mutate( SUBJID = substring(SUBJID, first=4)) %>% left_join( myADSL0() %>% select(SUBJID, USUBJID), by="SUBJID" )
+    
+  })
   
   subjs <- reactive({
-    myADSL0() %>% pull (USUBJID) %>% unique() %>% sample(50)
+    unique( c(myADPC() %>% pull (USUBJID) %>% unique() ,"01-705-1186", myADSL0() %>% pull(USUBJID) %>% sample(40)) )
   })
   
   myADSL <- reactive({
@@ -43,19 +58,7 @@ function(input, output, session) {
     lb %>% filter(USUBJID %in% subjs())
   })
   
-  myADPC <- reactive({
-    ADPC <- haven::read_xpt("https://github.com/phuse-org/phuse-scripts/raw/master/data/adam/cdisc/adpc.xpt")
-    
-    adpcCols <- names(ADPC)
-    
-    if (! ("AVISIT" %in% adpcCols | "AVISITN" %in% adpcCols) & "VISITNUM" %in% adpcCols) {
-      ADPC$AVISIT <- factor(ADPC$VISITNUM)
-      ADPC$AVISITN <- ADPC$VISITNUM
-    }
-    
-    ADPC %>% select(-USUBJID) %>% mutate( SUBJID = substring(SUBJID, first=4)) %>% left_join( myADSL() %>% select(SUBJID, USUBJID), by="SUBJID" )
-    
-  })
+
   # Grab events from shiny.onInputChange
   uid <- reactiveVal()
   observe({
