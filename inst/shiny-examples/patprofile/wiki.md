@@ -16,7 +16,7 @@ to patient profiles, provided by the [patprofile](https://github.com/Novartis/pa
 ```r
 devtools::install_github('Novartis/patprofile')
 devtools::install_github('xni7/safetyexploreR')
-showExample('patProfile')
+showExample('patprofile')
 ```
 
 
