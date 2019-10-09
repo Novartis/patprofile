@@ -10,3 +10,5 @@ library(safetyexploreR)
 library(shinythemes)
 library(tidyr)
 library(rmarkdown)
+
+#set.seed(9999)

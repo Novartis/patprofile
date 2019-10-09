@@ -18,22 +18,29 @@ Shiny.setInputValue('pp_module1-patient_js', chart.participantsSelected[0]);
 "
 
 function(input, output, session) {
-  myADSL <- reactive({
+  myADSL0 <- reactive({
     haven::read_xpt("https://github.com/phuse-org/phuse-scripts/raw/master/data/adam/cdisc/adsl.xpt")
+  })
+  
+  
+  subjs <- reactive({
+    myADSL0() %>% pull (USUBJID) %>% unique() %>% sample(50)
+  })
+  
+  myADSL <- reactive({
+    myADSL0() %>% filter(USUBJID %in% subjs())
   })
   myADCM <- reactive({
     cm <- haven::read_xpt("https://github.com/phuse-org/phuse-scripts/raw/master/data/adam/cdisc/adcm.xpt")
     cm$CMDECOD <- cm$CMTRT
-    cm
+    cm %>% filter(USUBJID %in% subjs())
   })
   myADAE <- reactive({
-    haven::read_xpt("https://github.com/phuse-org/phuse-scripts/raw/master/data/adam/cdisc/adae.xpt")
+    haven::read_xpt("https://github.com/phuse-org/phuse-scripts/raw/master/data/adam/cdisc/adae.xpt") %>% filter(USUBJID %in% subjs())
   })
   myADLB <- reactive({
     lb <- haven::read_xpt("https://github.com/phuse-org/phuse-scripts/raw/master/data/adam/cdisc/adlbc.xpt")
-    #subjs <- lb %>% pull (USUBJID) %>% unique() %>% sample(80)
-    #lb1 <- lb %>% filter(USUBJID %in% subjs)
-    lb
+    lb %>% filter(USUBJID %in% subjs())
   })
   
   myADPC <- reactive({
