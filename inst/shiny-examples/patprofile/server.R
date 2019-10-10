@@ -163,20 +163,18 @@ function(input, output, session) {
       SubjList.treatment = "TRTA"
     )
     
-    plot1 <- plot(ae_tendril) %>%
-      ggplotly %>%
-      onRender("
-      function(el){
+    plot1 <- plot(ae_tendril, interactive = TRUE)
+    
+    onRender(plot1, "
+      function(el, x){
         el.on('plotly_click', function(d){
-          selsub = d.points[0].data.key[d.points[0].pointNumber];
+          var selsub = d.points[0].customdata;
           console.log('d object= ', d);
-          console.log('Click: ', selsub);
-          console.log('id: ', d.points[0].pointNumber);
+          console.log('Subject id = ', selsub);
           Shiny.onInputChange('pp_module1-patient_js', selsub);
         })
       }
     ")
-    return(plot1)
 })
 
 
