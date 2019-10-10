@@ -39,7 +39,7 @@ function(input, output, session) {
   })
   
   subjs <- reactive({
-    unique( c(myADPC() %>% pull (USUBJID) %>% unique() ,"01-705-1186", myADSL0() %>% pull(USUBJID) %>% sample(40)) )
+    unique( c(myADPC() %>% pull (USUBJID) %>% unique() ,"01-705-1186", myADSL0() %>% pull(USUBJID) ))#%>% sample(40)) )
   })
   
   myADSL <- reactive({
@@ -114,7 +114,75 @@ function(input, output, session) {
       paste0("Clicked ", d$key, ". Go back to the patient profile tab to get more information about this patient.")
     }
   })
+
   
+  # Tendril plot
+  # Linked plot
+  output$tendrilTab <- renderUI({
+    req(myADAE())
+    
+    tagList(
+      sidebarLayout(
+        sidebarPanel(
+          selectizeInput("armSelector1", label = "First Arm", choices = unique(myADAE()$TRTA), selected = "Placebo"),
+          selectizeInput("armSelector2", label = "Second Arm", choices = unique(myADAE()$TRTA), selected = "Xanomeline High Dose")
+        ),
+        mainPanel(
+          plotlyOutput("tendrilPlot")
+        )
+      )
+    )
+  })
+  
+  tendrilData <- reactive({
+    
+    req(myADAE(), input$armSelector1, input$armSelector2)
+    
+    myADAE() %>%
+      filter( (TRTA %in% c(input$armSelector1, input$armSelector2) ) )
+    
+  })
+  
+  output$tendrilPlot <- renderPlotly({
+    
+    ae1 <- tendrilData()
+    trts <- unique(ae1$TRTA)
+    
+    ae_tendril <- Tendril(
+      mydata = as.data.frame(ae1),
+      rotations = rep(3, nrow(ae1)),
+      AEfreqTreshold = 9,
+      Tag = "Comment",
+      Treatments = trts,
+      Unique.Subject.Identifier = "USUBJID",
+      Terms = "AEDECOD",
+      Treat = "TRTA",
+      StartDay = "ASTDY",
+      SubjList = as.data.frame(ae1%>%select(USUBJID, TRTA)),
+      SubjList.subject = "USUBJID",
+      SubjList.treatment = "TRTA"
+    )
+    
+    plot1 <- plot(ae_tendril) %>%
+      ggplotly %>%
+      onRender("
+      function(el){
+        el.on('plotly_click', function(d){
+          selsub = d.points[0].data.key[d.points[0].pointNumber];
+          console.log('d object= ', d);
+          console.log('Click: ', selsub);
+          console.log('id: ', d.points[0].pointNumber);
+          Shiny.onInputChange('pp_module1-patient_js', selsub);
+        })
+      }
+    ")
+    return(plot1)
+})
+
+
+
+  
+    
   output$aeexp <- renderAeExplorer({
     aevars <- c("USUBJID","AEBODSYS", "AEDECOD", "TRTA" , "AESER", "AESEV","AEREL", "AEOUT")
     aeExplorer(myADAE() %>% select( one_of(aevars)), group_col = "TRTA")

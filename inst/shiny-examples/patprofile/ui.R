@@ -53,7 +53,12 @@ function(request){
                )
     ),
     
-
+    tabPanel(
+      title = "Tendril plot",
+      tagList(
+        uiOutput("tendrilTab")
+      )
+    ),
     tabPanel(
       title = "eDISH using Plotly",
       tagList(
