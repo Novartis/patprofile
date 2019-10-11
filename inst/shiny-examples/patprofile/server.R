@@ -124,10 +124,12 @@ function(input, output, session) {
     tagList(
       sidebarLayout(
         sidebarPanel(
+          width = 2,
           selectizeInput("armSelector1", label = "First Arm", choices = unique(myADAE()$TRTA), selected = "Placebo"),
           selectizeInput("armSelector2", label = "Second Arm", choices = unique(myADAE()$TRTA), selected = "Xanomeline High Dose")
         ),
         mainPanel(
+          width = 10,
           plotlyOutput("tendrilPlot")
         )
       )
@@ -163,7 +165,8 @@ function(input, output, session) {
       SubjList.treatment = "TRTA"
     )
     
-    plot1 <- plot(ae_tendril, interactive = TRUE)
+    plot1 <- plot(ae_tendril, interactive = TRUE) %>%
+      layout(height = 600, width = 1000)
     
     onRender(plot1, "
       function(el, x){
