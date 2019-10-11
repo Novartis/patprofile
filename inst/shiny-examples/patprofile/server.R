@@ -130,10 +130,16 @@ function(input, output, session) {
         ),
         mainPanel(
           width = 10,
+          verbatimTextOutput("tendrilSelectedID"),
           plotlyOutput("tendrilPlot")
         )
       )
     )
+  })
+  
+  output$tendrilSelectedID <- renderPrint({
+    req(input[["pp_module1-patient_js"]])
+    print(paste0("Selected SUBJECT: ", input[["pp_module1-patient_js"]]))
   })
   
   tendrilData <- reactive({
