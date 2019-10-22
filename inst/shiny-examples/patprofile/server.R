@@ -16,6 +16,75 @@ Shiny.setInputValue('pp_module1-patient_js', chart.participantsSelected[0]);
 });
 }
 "
+plot.Tendril2 <- function(x, ...) {
+  
+  params <- as.list(substitute(list(...)))
+  
+  if (is.null(params$coloring)) {
+    params$coloring = "Terms"
+  }
+  
+  if (is.null(params$interactive)) {
+    params$interactive = FALSE
+  }
+  
+  if (!params$interactive) {
+    p <- ggplot2_plotbasic(x, coloring=params$coloring)
+  } else {
+    p <- plotly_plotbasic2(x, coloring=params$coloring)
+  }
+  
+  return(p)
+}
+
+plotly_plotbasic2 <- function(tendril, coloring, opacity=0.5) {
+  `%>%` <- magrittr::`%>%`
+  cc= tendril$data[[coloring]]
+  
+  # if(coloring %in% c("p", "p.adj", "fish")) {
+  #   cc <- -log10(cc)
+  #   cc[cc<(-3)] <- -3
+  # }
+  
+  palette <- Tendril:::tendril_palette()
+  max_termscount <- max(tendril$data$TermsCount, na.rm = TRUE)
+  p <- tendril$data %>%
+    dplyr::group_by(Terms) %>%
+    plotly::plot_ly(x=~x, y=~y, width = 700, height = 700)%>%
+    plotly::add_markers(              #mode = "markers", type = "scatter",
+      size=~(TermsCount/max_termscount)*10, opacity=opacity, sizes=c(30,50),
+      symbol = ~Treat,
+      color = as.formula(paste0('~', coloring)),
+      colors = palette$grpalette,
+      #line = list(color = "lightgrey"),
+      text = ~paste("subjid = ",Unique.Subject.Identifier,"<br>Term: ", Terms,"<br> Arm:",Treat, '<br>Start day:', StartDay, '<br>p.adjusted:', round(p.adj, 4)),
+      hoverinfo = "text",
+      customdata = ~Unique.Subject.Identifier) %>%
+    plotly::add_trace(color=I("lightgrey"), mode="lines", type="scatter", opacity=opacity, showlegend = FALSE)%>%
+    plotly::add_annotations(
+      x = 0,
+      y = 1,
+      xref = "paper",
+      yref = "paper",
+      text = tendril$Treatments[2],
+      xanchor = "left",
+      showarrow = F
+    ) %>%
+    plotly::add_annotations(
+      x = 1,
+      y = 1,
+      xref = "paper",
+      yref = "paper",
+      text = tendril$Treatments[1],
+      xanchor = "right",
+      showarrow = F
+    ) %>%
+    plotly::layout(xaxis = list(nticks = 10, showticklabels = FALSE, title = ""),
+                   yaxis = list(scaleanchor = "x", showticklabels = FALSE, title = "")
+    )
+  
+  return(p)
+}
 
 function(input, output, session) {
   
@@ -171,7 +240,7 @@ function(input, output, session) {
       SubjList.treatment = "TRTA"
     )
     
-    plot1 <- plot(ae_tendril, interactive = TRUE) %>%
+    plot1 <- plot.Tendril2(ae_tendril, interactive = TRUE, coloring = "p.adj") %>%
       layout(height = 600, width = 1000)
     
     onRender(plot1, "
