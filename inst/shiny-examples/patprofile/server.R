@@ -57,7 +57,15 @@ plotly_plotbasic2 <- function(tendril, coloring, opacity=0.5) {
       color = as.formula(paste0('~', coloring)),
       colors = palette$grpalette,
       #line = list(color = "lightgrey"),
-      text = ~paste("subjid = ",Unique.Subject.Identifier,"<br>Term: ", Terms,"<br> Arm:",Treat, '<br>Start day:', StartDay, '<br>p.adjusted:', round(p.adj, 4)),
+      #text = ~paste("subjid = ",Unique.Subject.Identifier,"<br>Term: ", Terms,"<br> Arm:",Treat, '<br>Start day:', StartDay, '<br>p.adjusted:', round(p.adj, 4)),
+      text = ~paste(
+        "subjid = ",Unique.Subject.Identifier,
+        "<br>Term: ", Terms,
+        "<br>Arm:",  Treat,
+        '<br>Start day:', StartDay,
+        '<br>Frequency:', TermsCount,
+        '<br>p.adjusted:', round(p.adj, 4),
+        sep=""), 
       hoverinfo = "text",
       customdata = ~Unique.Subject.Identifier) %>%
     plotly::add_trace(color=I("lightgrey"), mode="lines", type="scatter", opacity=opacity, showlegend = FALSE)%>%
