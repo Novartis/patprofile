@@ -4,7 +4,8 @@ Title: Patient profile module
 Version: 0.2.2
 Authors@R: c(
     person("Renan", "Sauteraud", email = "renan.sauteraud@gmail.com", role = c("aut", "cre")),
-    person("Xiao", "Ni", email = "xiao.nid@novartis.com", role = c("aut"))
+    person("Xiao", "Ni", email = "xiao.nid@novartis.com", role = c("aut")),
+    person("Matthew", "Brierley", email = "TBP", role = "ctb")
     )
 Description: Patient profile as a single module that can be plugged in any app.
     Patient-level visualization encapsulated as submodules.
