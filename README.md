@@ -12,5 +12,5 @@ The key developers and package authors include the following:
 
 - [Xiao Ni](mailto:xiao.nid@novartis.com), (Developer, Maintainer)
 
-- Matthewe Brierly, (Original developer)
+- Matthew Brierley (Original developer)
 
