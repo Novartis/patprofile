@@ -4,7 +4,7 @@ Shiny app demo
 
 https://xiao-ni.shinyapps.io/patprofile
 
-##Developers / Authors
+# Developers / Authors
 
 The key developers and package authors include the following:
 
